@@ -26,11 +26,16 @@ export default function Home() {
   }, []);
 
   const fetchMeals = async (day) => {
+  try {
     const res = await fetch(`${API_URL}/meals/${day}`);
+    if (!res.ok) throw new Error(`Erro ao buscar refeições para ${day}: ${res.status}`);
     const data = await res.json();
     setMealsByDay(prev => ({ ...prev, [day]: data }));
-  };
-
+  } catch (error) {
+    console.error(error);
+    setMealsByDay(prev => ({ ...prev, [day]: [] })); // Fallback para array vazio
+  }
+};
   const addMeal = async () => {
     await fetch(`${API_URL}/meals`, {
       method: "POST",
