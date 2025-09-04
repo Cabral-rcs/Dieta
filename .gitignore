@@ -1,0 +1,16 @@
+# Ignorar node_modules em ambos frontend e backend
+node_modules/
+
+# Ignorar arquivos de ambiente
+.env
+.env.local
+.env.development
+.env.production
+
+# Ignorar arquivos de build do Next.js
+frontend/.next/
+frontend/out/
+
+# Ignorar arquivos de log e temporários
+*.log
+.DS_Store

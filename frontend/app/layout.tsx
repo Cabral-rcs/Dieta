@@ -1,5 +1,4 @@
-// frontend/app/layout.tsx
-import "./globals.css"; // se estiver usando Tailwind
+import "./globals.css";
 
 export const metadata = {
   title: "Diet App",

@@ -3,7 +3,7 @@ const { Pool } = pkg;
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false } // necessário no Render
+  ssl: { rejectUnauthorized: false } // Necessário para Render ou outros hosts
 });
 
 export const query = (text, params) => pool.query(text, params);

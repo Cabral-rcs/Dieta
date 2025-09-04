@@ -27,5 +27,19 @@ app.post("/meals", async (req, res) => {
   res.json(result.rows[0]);
 });
 
+// DELETE refeição específica por ID
+app.delete("/meals/:id", async (req, res) => {
+  const { id } = req.params;
+  await query("DELETE FROM meals WHERE id = $1", [id]);
+  res.sendStatus(204);
+});
+
+// DELETE todas as refeições de um dia (limpar dia)
+app.delete("/meals/day/:day", async (req, res) => {
+  const { day } = req.params;
+  await query("DELETE FROM meals WHERE day = $1", [day]);
+  res.sendStatus(204);
+});
+
 const port = process.env.PORT || 4000;
 app.listen(port, () => console.log(`Backend rodando na porta ${port}`));
