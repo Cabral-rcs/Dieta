@@ -1,56 +1,31 @@
 import express from "express";
 import cors from "cors";
-import pool, { initDB } from "./db.js";
+import dotenv from "dotenv";
+import { query, initDB } from "./db.js";
 
+dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 4000;
-
 app.use(cors());
 app.use(express.json());
 
-// Inicializar banco
-initDB();
+await initDB();
 
-// Buscar refeições de um dia
+// GET refeições de um dia
 app.get("/meals/:day", async (req, res) => {
   const { day } = req.params;
-
-  const dayRow = await pool.query("SELECT * FROM days WHERE name = $1", [day]);
-  if (dayRow.rows.length === 0) return res.json({ meals: [] });
-
-  const meals = await pool.query("SELECT * FROM meals WHERE dayId = $1", [dayRow.rows[0].id]);
-
-  for (let meal of meals.rows) {
-    const foods = await pool.query("SELECT * FROM foods WHERE mealId = $1", [meal.id]);
-    meal.foods = foods.rows;
-  }
-
-  res.json({ day, meals: meals.rows });
+  const result = await query("SELECT * FROM meals WHERE day = $1", [day]);
+  res.json(result.rows);
 });
 
-// Adicionar alimento
-app.post("/meals/:day/:mealId/foods", async (req, res) => {
-  const { mealId } = req.params;
-  const { name, quantity } = req.body;
-
-  await pool.query("INSERT INTO foods (mealId, name, quantity) VALUES ($1, $2, $3)", [
-    mealId,
-    name,
-    quantity
-  ]);
-
-  res.json({ message: "Alimento adicionado" });
+// POST adicionar refeição
+app.post("/meals", async (req, res) => {
+  const { day, meal_type, food_name, quantity } = req.body;
+  const result = await query(
+    "INSERT INTO meals (day, meal_type, food_name, quantity) VALUES ($1,$2,$3,$4) RETURNING *",
+    [day, meal_type, food_name, quantity]
+  );
+  res.json(result.rows[0]);
 });
 
-// Remover alimento
-app.delete("/meals/:day/:mealId/:foodId", async (req, res) => {
-  const { foodId } = req.params;
-
-  await pool.query("DELETE FROM foods WHERE id = $1", [foodId]);
-
-  res.json({ message: "Alimento removido" });
-});
-
-app.listen(PORT, () => {
-  console.log(`✅ Servidor rodando em http://localhost:${PORT}`);
-});
+const port = process.env.PORT || 4000;
+app.listen(port, () => console.log(`Backend rodando na porta ${port}`));
