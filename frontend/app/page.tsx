@@ -26,16 +26,17 @@ export default function Home() {
   }, []);
 
   const fetchMeals = async (day) => {
-  try {
-    const res = await fetch(`${API_URL}/meals/${day}`);
-    if (!res.ok) throw new Error(`Erro ao buscar refeições para ${day}: ${res.status}`);
-    const data = await res.json();
-    setMealsByDay(prev => ({ ...prev, [day]: data }));
-  } catch (error) {
-    console.error(error);
-    setMealsByDay(prev => ({ ...prev, [day]: [] })); // Fallback para array vazio
-  }
-};
+    try {
+      const res = await fetch(`${API_URL}/meals/${day}`);
+      if (!res.ok) throw new Error(`Erro ao buscar refeições para ${day}: ${res.status}`);
+      const data = await res.json();
+      setMealsByDay(prev => ({ ...prev, [day]: data }));
+    } catch (error) {
+      console.error(error);
+      setMealsByDay(prev => ({ ...prev, [day]: [] })); // Fallback para array vazio
+    }
+  };
+
   const addMeal = async () => {
     await fetch(`${API_URL}/meals`, {
       method: "POST",
@@ -73,39 +74,39 @@ export default function Home() {
       <h1 className="text-3xl font-bold text-center mb-8">Planejador de Dieta Semanal 🌟</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-6">
         {days.map((day, idx) => (
-          <div key={day} className={`card ${dayClasses[idx]} hover-effect`}>
+          <div key={day} className={`card ${dayClasses[idx]}`}>
             <h2 className="text-xl font-semibold mb-4">{day} 📅</h2>
             {mealTypes.map((type) => (
-              <div key={type.name} className="mb-4">
-                <h3 className="font-medium">{type.emoji} {type.name}</h3>
-                <ul className="list-disc pl-5">
+              <div key={type.name} className="meal-section">
+                <h3 className="meal-title">{type.emoji} {type.name}</h3>
+                <ul className="meal-list">
                   {(mealsByDay[day] || []).filter(m => m.meal_type === type.name).map((m: any) => (
-                    <li key={m.id} className="flex justify-between">
-                      {m.food_name} ({m.quantity})
+                    <li key={m.id} className="meal-item">
+                      <span className="flex-1">{m.food_name} ({m.quantity})</span>
                       <button onClick={() => removeMeal(m.id, day)} className="text-red-300 hover:text-red-100">❌</button>
                     </li>
                   ))}
                 </ul>
-                <div className="mt-2 flex">
+                <div className="add-form">
                   <input
-                    placeholder="Alimento"
+                    placeholder="Nome do alimento"
                     value={newFood.food_name}
                     onChange={e => setNewFood({ ...newFood, day, meal_type: type.name, food_name: e.target.value })}
-                    className="p-1 mr-2 rounded text-black"
+                    className="input-field"
                   />
                   <input
-                    placeholder="Quantidade"
+                    placeholder="Quantidade (ex: 200g)"
                     value={newFood.quantity}
                     onChange={e => setNewFood({ ...newFood, quantity: e.target.value })}
-                    className="p-1 mr-2 rounded text-black"
+                    className="input-field"
                   />
-                  <button onClick={addMeal} className="bg-white text-black px-2 rounded hover:bg-gray-200">➕</button>
+                  <button onClick={addMeal} className="button">➕</button>
                 </div>
               </div>
             ))}
-            <div className="mt-4 flex justify-between">
-              <button onClick={() => clearDay(day)} className="bg-red-600 px-2 rounded">Limpar Dia 🗑️</button>
-              <select onChange={e => duplicateDay(day, e.target.value)} className="p-1 rounded text-black">
+            <div className="mt-4 flex justify-between items-center">
+              <button onClick={() => clearDay(day)} className="clear-button">Limpar Dia 🗑️</button>
+              <select onChange={e => duplicateDay(day, e.target.value)} className="duplicate-select">
                 <option>Duplicar para...</option>
                 {days.filter(d => d !== day).map(d => <option key={d} value={d}>{d}</option>)}
               </select>
