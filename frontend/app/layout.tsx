@@ -1,5 +1,4 @@
 import "./globals.css";
-import { ThemeProvider } from "next-themes"
 
 export const metadata = {
   title: "Diet App",
