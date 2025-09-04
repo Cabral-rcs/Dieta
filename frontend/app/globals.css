@@ -12,13 +12,13 @@
 .bg-sunday { background: linear-gradient(135deg, #38B2AC, #4299E1); }
 
 /* Efeitos gerais */
-.card { @apply rounded-xl shadow-lg p-4 text-white overflow-hidden; } /* Adicionado overflow-hidden para conter conteúdo */
+.card { @apply rounded-xl shadow-lg p-4 text-white overflow-hidden; }
 .meal-section { @apply mb-4; }
 .meal-title { @apply font-medium flex items-center; }
 .meal-list { @apply list-disc pl-5 space-y-1; }
-.meal-item { @apply flex justify-between items-center word-break; } /* Adicionado word-break para textos longos */
+.meal-item { @apply flex justify-between items-center break-words; } /* Substituído word-break por break-words */
 .add-form { @apply mt-2 flex space-x-2; }
-.input-field { @apply p-1 rounded text-black flex-1; } /* Flex-1 para alinhar inputs */
+.input-field { @apply p-1 rounded text-black flex-1; }
 .button { @apply bg-white text-black px-2 py-1 rounded hover:bg-gray-200; }
 .clear-button { @apply bg-red-600 px-2 py-1 rounded hover:bg-red-500; }
 .duplicate-select { @apply p-1 rounded text-black; }
